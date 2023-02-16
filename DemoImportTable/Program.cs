@@ -36,22 +36,48 @@ namespace DemoImportTable
             //    }
             //}
 
+            //using (SqlConnection connection = new SqlConnection())
+            //{
+            //    connection.ConnectionString = @"DATA SOURCE=10.60.0.34\SQL2019DEV; INITIAL CATALOG=Demo;INTEGRATED SECURITY=True";
+
+            //    using (SqlCommand command = connection.CreateCommand())
+            //    {
+            //        command.CommandText = "CSP_AddContact";
+            //        command.CommandType = CommandType.StoredProcedure;
+
+            //        command.Parameters.Add(new SqlParameter() { ParameterName = "Id", Value = -1, Direction = ParameterDirection.InputOutput });
+            //        command.Parameters.AddWithValue("BirthDate", new DateTime(1970,1,1));
+
+            //        connection.Open();
+            //        command.ExecuteNonQuery();
+
+            //        Console.WriteLine(command.Parameters["Id"].Value);
+            //    }
+            //}
+
             using (SqlConnection connection = new SqlConnection())
             {
-                connection.ConnectionString = @"DATA SOURCE=10.60.0.34\SQL2019DEV; INITIAL CATALOG=Demo;INTEGRATED SECURITY=True";
+                connection.ConnectionString = @"DATA SOURCE=10.60.0.34\SQL2019DEV; INITIAL CATALOG=DbSlide;INTEGRATED SECURITY=True";
 
                 using (SqlCommand command = connection.CreateCommand())
                 {
-                    command.CommandText = "CSP_AddContact";
+                    command.CommandText = "GetStudent";
                     command.CommandType = CommandType.StoredProcedure;
 
-                    command.Parameters.Add(new SqlParameter() { ParameterName = "Id", Value = -1, Direction = ParameterDirection.InputOutput });
-                    command.Parameters.AddWithValue("BirthDate", new DateTime(1970,1,1));
+                    command.Parameters.AddWithValue("SectionId", 1010);
+                    command.Parameters.Add(new SqlParameter() { ParameterName = "Result", Value = -1, Direction = ParameterDirection.ReturnValue });
 
                     connection.Open();
-                    command.ExecuteNonQuery();
+                    
+                    using(SqlDataReader reader = command.ExecuteReader())
+                    {
+                        while(reader.Read())
+                        {
+                            Console.WriteLine($"{reader["last_name"]} {reader["first_name"]}");
+                        }
+                    }
 
-                    Console.WriteLine(command.Parameters["Id"].Value);
+                    Console.WriteLine($"Return Value : {command.Parameters["Result"].Value}");
                 }
             }
         }
